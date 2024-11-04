@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Adiministrador de Proyectos</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+</head>
+
+<body>
+<div class="container-fluid text-center">
+    <div><h2>Administrador de Proyectos</h2></div>
+    <div class="m-2">
+        <a class="btn btn-primary btn-lg active" role="button" aria-pressed="true" th:href="@{/proyectos/NuevoProyecto}">AGREGAR NUEVO PROYECTO</a>
+    </div>
+
+    <div th:if="${mensaje}" class="alert alert-success text-center">
+        [[${mensaje}]]
+    </div>
+
+    <div>
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nombre del Proyecto</th>
+                <th>Asignatura</th>
+                <th>Nota</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="proyecto : ${proyectos}">
+                <td th:text="${proyecto.idProyecto}">1</td>
+                <td th:text="${proyecto.nombreProyecto}">Proyecto X</td>
+                <td th:text="${proyecto.asignatura}">Asignatura X</td>
+                <td th:text="${proyecto.nota}">10</td>
+                <td>
+                    <a class="btn btn-info" th:href="@{'/proyectos/NuevoProyecto/' + ${proyecto.idProyecto}}">Editar</a>
+                    <a class="btn btn-danger" th:href="@{'/proyectos/delete/' + ${proyecto.idProyecto}}"
+                       onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">Eliminar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
