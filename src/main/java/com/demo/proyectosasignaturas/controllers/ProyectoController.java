@@ -10,14 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
+/**
+ * Controlador para gestionar las operaciones relacionadas con proyectos.
+ */
 @Controller
 public class ProyectoController {
 
     @Autowired
     private ProyectoRepository proyectoRepository;
 
-    //muestra todos los proyectos
-
+    /**
+     * Muestra todos los proyectos en la vista correspondiente.
+     *
+     * @param model el modelo para la vista que utiliza ThymeLeaf
+     * @return el nombre de la vista donde se muestran los proyectos
+     */
     @GetMapping("/proyectos")
     public String proyectos(Model model) {
         List<Proyecto> listaProyectos = proyectoRepository.findAll();
@@ -26,6 +33,12 @@ public class ProyectoController {
         return "proyectos";
     }
 
+    /**
+     * Muestra el formulario para crear un nuevo proyecto.
+     *
+     * @param model el modelo para la vista
+     * @return el nombre de la vista para crear un nuevo proyecto
+     */
     @GetMapping("/proyectos/NuevoProyecto")
     public String proyectoNuevo(Model model) {
         model.addAttribute("proyecto", new Proyecto());
@@ -34,9 +47,17 @@ public class ProyectoController {
         return "NuevoProyecto";
     }
 
+    /**
+     * Guarda un nuevo proyecto o actualiza uno existente.
+     *
+     * @param proyecto el proyecto a guardar
+     * @param redirectAttributes atributos para redirigir y mostrar mensajes
+     * @return la redirección a la lista de proyectos
+     */
     @PostMapping("/proyectos/guardar")
     public String guardarNuevoProyecto(Proyecto proyecto, RedirectAttributes redirectAttributes) {
         try{
+            // Si el proyecto ya existe, lo actualizamos
             if (proyecto.getIdProyecto() != null){
 
                 Proyecto proyectoExiste = proyectoRepository.getReferenceById(Long.valueOf(proyecto.getIdProyecto()));
@@ -48,6 +69,7 @@ public class ProyectoController {
                 proyectoRepository.save(proyectoExiste);
                 redirectAttributes.addFlashAttribute("message", "Proyecto guardado correctamente");
             }
+            // Si es un nuevo proyecto, lo guardamos
             else{
                 proyectoRepository.save(proyecto);
                 redirectAttributes.addFlashAttribute("message", "Proyecto agregado correctamente");
@@ -55,9 +77,17 @@ public class ProyectoController {
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
-        return "redirect:/proyectos";
+        return "redirect:/proyectos"; // Redirige a la lista de proyectos
     }
 
+    /**
+     * Muestra el formulario para editar un proyecto existente.
+     *
+     * @param idProyecto el ID del proyecto a editar
+     * @param model el modelo para la vista
+     * @param redirectAttributes atributos para redirigir y mostrar mensajes
+     * @return el nombre de la vista para editar el proyecto
+     */
     @GetMapping("proyectos/NuevoProyecto/{idProyecto}")
     public String editarProyecto(@PathVariable Integer idProyecto, Model model, RedirectAttributes redirectAttributes) {
         try{
@@ -68,9 +98,17 @@ public class ProyectoController {
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("message", "Error al editar proyecto");
         }
-        return "redirect:/proyectos";
+        return "redirect:/proyectos"; // Redirige a la lista de proyectos en caso de error
     }
 
+
+    /**
+     * Elimina un proyecto existente.
+     *
+     * @param id el ID del proyecto a eliminar
+     * @param redirectAttributes atributos para redirigir y mostrar mensajes
+     * @return la redirección a la lista de proyectos
+     */
     @GetMapping("/proyectos/delete/{id}")
     public String eliminarProyecto(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
@@ -79,9 +117,6 @@ public class ProyectoController {
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
-        return "redirect:/proyectos";
+        return "redirect:/proyectos"; // Redirige a la lista de proyectos
     }
-
-
-
 }

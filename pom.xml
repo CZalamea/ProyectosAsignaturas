@@ -95,8 +95,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version> <!-- Asegúrate de que sea la versión adecuada -->
+            <scope>test</scope>
+        </dependency>
+
+
 
     </dependencies>
+
+
 
     <build>
         <plugins>
@@ -112,6 +122,15 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <additionalJOption>--add-modules java.desktop,java.naming</additionalJOption>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
