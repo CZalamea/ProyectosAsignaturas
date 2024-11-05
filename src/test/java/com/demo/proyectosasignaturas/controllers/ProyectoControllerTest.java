@@ -36,7 +36,6 @@ class ProyectoControllerTest {
 
     @Test
     @DisplayName("retornar la vista de proyectos y agregar la lista de proyectos al modelo")
-
     public void testProyectos(){
 
         Proyecto proyecto1 = new Proyecto();
@@ -81,4 +80,39 @@ class ProyectoControllerTest {
         verify(proyectoRepository).deleteById(Long.valueOf(id));
         verify(redirectAttributes).addFlashAttribute("message", "Proyecto eliminado correctamente");
     }
+
+    @Test
+    @DisplayName("muestra error cuando se intenta editar un proyecto inexistente")
+    public void testEditarProyectoNoExistente() {
+        Integer idProyectoInexistente = 999;
+
+        when(proyectoRepository.getReferenceById(Long.valueOf(idProyectoInexistente)))
+                .thenThrow(new IllegalArgumentException("Proyecto no encontrado"));
+
+        String viewName = proyectoController.editarProyecto(idProyectoInexistente, model, redirectAttributes);
+
+        assertEquals("redirect:/proyectos", viewName);
+        verify(redirectAttributes).addFlashAttribute("mensaje", "Error al editar proyecto");
+    }
+
+    @Test
+    @DisplayName("edita un proyecto existente y redirige a la lista de proyectos")
+    public void testEditarProyecto() {
+        Integer idProyecto = 1;
+        Proyecto proyectoExistente = new Proyecto(idProyecto, "Proyecto Original", "Matemáticas", 8);
+        Proyecto proyectoEditado = new Proyecto(idProyecto, "Proyecto Modificado", "Ciencias", 9);
+
+        when(proyectoRepository.getReferenceById(Long.valueOf(idProyecto))).thenReturn(proyectoExistente);
+
+        proyectoExistente.setNombreProyecto(proyectoEditado.getNombreProyecto());
+        proyectoExistente.setAsignatura(proyectoEditado.getAsignatura());
+        proyectoExistente.setNota(proyectoEditado.getNota());
+
+        String viewName = proyectoController.guardarNuevoProyecto(proyectoExistente, redirectAttributes);
+
+        assertEquals("redirect:/proyectos", viewName);
+        verify(proyectoRepository).save(proyectoExistente);
+        verify(redirectAttributes).addFlashAttribute("message", "Proyecto guardado correctamente");
+    }
+
 }
